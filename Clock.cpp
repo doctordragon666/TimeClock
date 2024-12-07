@@ -29,10 +29,10 @@ int main()
 	float hourAngle;         // 时钟对应的角度
 
 	SYSTEMTIME ti;                // 定义变量保存当前时间
-	ExMessage ex;
+	ExMessage ex;				//定义消息结构体接收消息
 
 	BeginBatchDraw();
-	while (1)
+	while (true)
 	{
 		// 绘制一个简单的表盘
 		setlinestyle(PS_SOLID, 1);
@@ -40,11 +40,11 @@ int main()
 		circle(center_x, center_y, Width / 4);
 
 		// 画刻度
-		int x, y, i;
-		for (i = 0; i < 60; i++)
+		int x, y;
+		for (int i = 0; i < 60; i++)
 		{
-			x = center_x + int(Width / 4.3 * sin(M_PI * 2 * i / 60));
-			y = center_y + int(Width / 4.3 * cos(M_PI * 2 * i / 60));
+			x = center_x + int(Width / 4.3 * sin(to_degree(i)));
+			y = center_y + int(Width / 4.3 * cos(to_degree(i)));
 
 			if (i % 15 == 0)
 				bar(x - 5, y - 5, x + 5, y + 5);
@@ -58,9 +58,9 @@ int main()
 
 		GetLocalTime(&ti);        // 获取当前时间
 		// 秒钟角度变化
-		secondAngle = ti.wSecond * 2 * M_PI / 60;  // 一圈一共2*PI，一圈60秒，一秒钟秒钟走过的角度为2*PI/60
+		secondAngle = to_degree(ti.wSecond);  // 一圈一共2*PI，一圈60秒，一秒钟秒钟走过的角度为2*PI/60
 		// 分钟角度变化
-		minuteAngle = ti.wMinute * 2 * M_PI / 60 + secondAngle / 60;  // 一圈一共2*PI，一圈60分，一分钟分钟走过的角度为2*PI/60
+		minuteAngle = to_degree(ti.wMinute) + secondAngle / 60;  // 一圈一共2*PI，一圈60分，一分钟分钟走过的角度为2*PI/60
 		// 时钟角度变化
 		hourAngle = ti.wHour * 2 * M_PI / 12 + minuteAngle / 12;  // 一圈一共2*PI，一圈12小时，一小时时钟走过的角度为2*PI/12
 		// 由角度决定的秒针端点坐标
@@ -103,7 +103,7 @@ int main()
 			EndBatchDraw();
 			closegraph();            // 关闭绘图窗口
 			return 0;
-		}
+		}//收到双击消息表示正常退出了
 	}
 
 	return -1;
